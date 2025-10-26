@@ -16,7 +16,7 @@ class InventoryVoter extends Voter
     const DELETE = 'DELETE_INVENTORY';
     const CREATE = 'CREATE_INVENTORY';
 
-    private Security $security; // ← DECLARAR LA PROPIEDAD EXPLÍCITAMENTE
+    private Security $security;
 
     public function __construct(Security $security)
     {
