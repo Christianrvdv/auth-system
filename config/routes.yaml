@@ -3,3 +3,16 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+    # config/routes.yaml
+    # Rutas de autenticación
+api_auth_register:
+    path: /api/auth/register
+    controller: App\Controller\AuthController::register
+    methods: POST
+
+api_auth_health:
+    path: /api/auth/health
+    controller: App\Controller\AuthController::health
+    methods: GET
+
