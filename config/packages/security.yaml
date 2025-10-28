@@ -45,7 +45,7 @@ security:
             provider: app_user_provider
             form_login:
                 login_path: app_login
-                check_path: app_login_post  # Cambia esto a una ruta diferente
+                check_path: app_login  # ← CAMBIAR A LA MISMA RUTA
                 enable_csrf: true
                 username_parameter: _username
                 password_parameter: _password

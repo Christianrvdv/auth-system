@@ -31,7 +31,7 @@ class WebControllerTest extends WebTestCase
     public function testRegisterPage(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/register');
+        $crawler = $client->request('GET', '/registration');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h4', 'Crear Cuenta');

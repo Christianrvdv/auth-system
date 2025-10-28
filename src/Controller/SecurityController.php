@@ -11,8 +11,8 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/login', name: 'app_login', methods: ['GET'])]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    #[Route('/login', name: 'app_login')]
+    public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
         // Si el usuario ya está autenticado, redirigir a home
         if ($this->getUser()) {
@@ -20,20 +20,13 @@ class SecurityController extends AbstractController
         }
 
         $error = $authenticationUtils->getLastAuthenticationError();
-        $lastUsername = $authenticationUtils->getLastUsername();
+        $lastUsername = $authenticationUtils->getLastUsername() ?? '';
 
-        return $this->render('security/login.html.twig', [
+        return $this->render('security/auth.html.twig', [
             'last_username' => $lastUsername,
-            'error' => $error
+            'error' => $error,
+            'is_register_page' => $request->query->get('show') === 'register'
         ]);
-    }
-
-    #[Route('/login', name: 'app_login_post', methods: ['POST'])]
-    public function loginPost(): Response
-    {
-        // Esta ruta nunca se ejecutará porque Symfony Security la intercepta
-        // pero es necesaria para que el routing funcione
-        return $this->redirectToRoute('app_login');
     }
 
     #[Route('/logout', name: 'app_logout')]

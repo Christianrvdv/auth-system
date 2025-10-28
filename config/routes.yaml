@@ -6,15 +6,15 @@ controllers:
 
     # config/routes.yaml
     # Rutas de autenticación
-api_auth_register:
-    path: /api/auth/register
-    controller: App\Controller\AuthController::register
-    methods: POST
-
 api_auth_health:
     path: /api/auth/health
     controller: App\Controller\AuthController::health
     methods: GET
+
+app_register_post:
+    path: /register
+    methods: POST
+    controller: App\Controller\RegistrationController::register
 
 # ELIMINA estas rutas duplicadas:
 # app_home, app_login, app_logout, app_register, app_users, app_user_delete
