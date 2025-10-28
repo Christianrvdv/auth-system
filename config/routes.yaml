@@ -16,3 +16,6 @@ api_auth_health:
     controller: App\Controller\AuthController::health
     methods: GET
 
+# ELIMINA estas rutas duplicadas:
+# app_home, app_login, app_logout, app_register, app_users, app_user_delete
+# porque ya están definidas con atributos en los controladores

@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestión de Usuarios - Sistema de Autenticación{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="bi bi-people"></i> Gestión de Usuarios
+        </h2>
+        <a href="{{ path('app_register') }}" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i> Nuevo Usuario
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-list-ul"></i> Lista de Usuarios Registrados
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover user-table">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Avatar</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Roles</th>
+                        <th>Método</th>
+                        <th>Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>
+                                {# COMENTADO O ELIMINADO: Referencia a avatar #}
+                                <i class="bi bi-person-circle text-muted" style="font-size: 2rem;"></i>
+                            </td>
+                            <td>
+                                <strong>{{ user.firstName }} {{ user.lastName }}</strong>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% for role in user.roles %}
+                                    <span class="badge {% if role == 'ROLE_ADMIN' %}bg-danger{% elseif role == 'ROLE_MANAGER' %}bg-warning{% else %}bg-primary{% endif %}">
+                                    {{ role }}
+                                </span>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                {% if user.isOAuth %}
+                                    <span class="badge bg-success">OAuth</span>
+                                {% else %}
+                                    <span class="badge bg-info">Credenciales</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {{ user.createdAt|date('d/m/Y H:i') }}
+                                </small>
+                            </td>
+                            <td>
+                                {% if user.id != app.user.id %}
+                                    <div class="btn-group btn-group-sm">
+                                        <button type="button" class="btn btn-danger"
+                                                onclick="confirmDelete({{ user.id }}, '{{ user.firstName }} {{ user.lastName }}')"
+                                                title="Eliminar usuario">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+
+                                        <form id="delete-form-{{ user.id }}"
+                                              action="{{ path('app_user_delete', {'id': user.id}) }}"
+                                              method="POST" style="display: none;">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    <span class="text-muted">Usuario actual</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                <i class="bi bi-people display-4 d-block mb-2"></i>
+                                No hay usuarios registrados
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="row mt-4">
+                <div class="col-md-3 col-6">
+                    <div class="card text-center bg-light">
+                        <div class="card-body">
+                            <h3 class="text-primary">{{ total_users }}</h3>
+                            <small class="text-muted">Total Usuarios</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="card text-center bg-light">
+                        <div class="card-body">
+                            <h3 class="text-success">{{ oauth_users }}</h3>
+                            <small class="text-muted">Usuarios OAuth</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="card text-center bg-light">
+                        <div class="card-body">
+                            <h3 class="text-info">{{ regular_users }}</h3>
+                            <small class="text-muted">Usuarios Regulares</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="card text-center bg-light">
+                        <div class="card-body">
+                            <h3 class="text-warning">{{ admin_users }}</h3>
+                            <small class="text-muted">Administradores</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

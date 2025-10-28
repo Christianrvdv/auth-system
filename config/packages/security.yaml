@@ -1,8 +1,4 @@
-# config/packages/security.yaml
 security:
-    # ⬇️ ELIMINA ESTA LÍNEA (obsoleta en Symfony 6+)
-    # enable_authenticator_manager: true
-
     role_hierarchy:
         ROLE_ADMIN: [ROLE_MANAGER, ROLE_INVENTORY_MANAGER, ROLE_USER]
         ROLE_MANAGER: [ROLE_INVENTORY_MANAGER, ROLE_USER]
@@ -22,6 +18,12 @@ security:
                 property: email
 
     firewalls:
+        # Firewall para desarrollo
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Firewall para la autenticación de API (login con JSON)
         login:
             pattern: ^/api/auth/login
             stateless: true
@@ -30,19 +32,26 @@ security:
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
+        # Firewall para la API (protegido por JWT)
         api:
             pattern: ^/api
             stateless: true
             jwt: ~
             entry_point: jwt
 
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
-
+        # Firewall principal para la parte web
         main:
             lazy: true
             provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login_post  # Cambia esto a una ruta diferente
+                enable_csrf: true
+                username_parameter: _username
+                password_parameter: _password
+            logout:
+                path: app_logout
+                target: app_home
 
     access_control:
         - { path: ^/api/auth/(login|register|health), roles: PUBLIC_ACCESS }
@@ -50,3 +59,6 @@ security:
         - { path: ^/api/manager, roles: ROLE_MANAGER }
         - { path: ^/api/inventory, roles: ROLE_INVENTORY_MANAGER }
         - { path: ^/api, roles: ROLE_USER }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: PUBLIC_ACCESS }

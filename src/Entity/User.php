@@ -41,6 +41,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // ← A
 
     #[ORM\Column(type: 'boolean')]
     private bool $isActive = true;
+    #[ORM\Column(type: 'boolean')]
+    private bool $isOAuth = false;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private $avatar;
 
     #[ORM\Column(type: 'datetime')]
     private \DateTime $createdAt;
@@ -143,6 +148,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface // ← A
     {
         $this->updatedAt = $updatedAt;
         return $this;
+    }
+
+    public function isOAuth(): bool
+    {
+        return $this->isOAuth;
+    }
+
+    public function setIsOAuth(bool $isOAuth): void
+    {
+        $this->isOAuth = $isOAuth;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param mixed $avatar
+     */
+    public function setAvatar($avatar): void
+    {
+        $this->avatar = $avatar;
     }
 
 }

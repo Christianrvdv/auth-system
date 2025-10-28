@@ -1,0 +1,188 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inicio - Sistema de Autenticación{% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body text-center py-5">
+                    <h1 class="display-4 fw-bold">
+                        <i class="bi bi-shield-check"></i> Bienvenido al Sistema
+                    </h1>
+                    <p class="lead">Sistema seguro de autenticación y gestión de usuarios</p>
+
+                    {% if not app.user %}
+                        <div class="mt-4">
+                            <a href="{{ path('app_register') }}" class="btn btn-light btn-lg me-3">
+                                <i class="bi bi-person-plus"></i> Crear Cuenta
+                            </a>
+                            <a href="{{ path('app_login') }}" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if app.user %}
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="feature-icon text-primary">
+                            <i class="bi bi-person-check"></i>
+                        </div>
+                        <h5 class="card-title">Sesión Activa</h5>
+                        <p class="card-text">Has iniciado sesión correctamente en el sistema.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="feature-icon text-success">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h5 class="card-title">Autenticación Segura</h5>
+                        <p class="card-text">Tu cuenta está protegida con los más altos estándares de seguridad.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <div class="feature-icon text-info">
+                            <i class="bi bi-google"></i>
+                        </div>
+                        <h5 class="card-title">OAuth 2.0</h5>
+                        <p class="card-text">Inicia sesión fácilmente con tu cuenta de Google.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-person-circle"></i> Información de tu Cuenta
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <th width="40%">Nombre:</th>
+                                        <td>{{ app.user.firstName }} {{ app.user.lastName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Email:</th>
+                                        <td>{{ app.user.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Roles:</th>
+                                        <td>
+                                            {% for role in app.user.roles %}
+                                                <span class="badge bg-primary">{{ role }}</span>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <th width="40%">Método de Login:</th>
+                                        <td>
+                                            {% if app.user.isOAuth %}
+                                                <span class="badge bg-success">OAuth (Google)</span>
+                                            {% else %}
+                                                <span class="badge bg-info">Credenciales</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Avatar:</th>
+                                        <td>
+                                            {# COMENTADO O ELIMINADO: Referencia a avatar #}
+                                            <i class="bi bi-person-circle text-muted"></i> No disponible
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-lightning-charge"></i> Características Principales
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Autenticación segura con JWT
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Login con OAuth 2.0 (Google)
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Sistema de roles y permisos
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Auditoría de seguridad
+                            </li>
+                            <li class="list-group-item">
+                                <i class="bi bi-check-circle text-success me-2"></i>
+                                Gestión de usuarios
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-graph-up"></i> Estadísticas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="border rounded p-3">
+                                    <h3 class="text-primary">{{ total_users ?? 0 }}</h3>
+                                    <small class="text-muted">Usuarios Registrados</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="border rounded p-3">
+                                    <h3 class="text-success">{{ oauth_users ?? 0 }}</h3>
+                                    <small class="text-muted">Usuarios OAuth</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
