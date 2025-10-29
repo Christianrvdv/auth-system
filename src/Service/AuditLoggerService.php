@@ -33,7 +33,6 @@ class AuditLoggerService
         $this->em->persist($auditLog);
         $this->em->flush();
 
-        // También log a archivo
         $this->logger->info('AUDIT_LOG', [
             'action' => $action,
             'user' => $user ? $user->getEmail() : 'anonymous',

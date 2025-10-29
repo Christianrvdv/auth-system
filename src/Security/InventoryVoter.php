@@ -1,5 +1,4 @@
 <?php
-// src/Security/InventoryVoter.php
 
 namespace App\Security;
 

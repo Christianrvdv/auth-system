@@ -1,10 +1,8 @@
 <?php
-// src/Controller/InventoryController.php
 namespace App\Controller;
 
 use App\Entity\InventoryItem;
 use App\Security\InventoryVoter;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +30,7 @@ class InventoryController extends AbstractController
     #[Route('/{id}', name: 'inventory_edit', methods: ['PUT'])]
     public function edit(int $id): JsonResponse
     {
-        $item = new InventoryItem(); // En realidad buscarías de BD
+        $item = new InventoryItem();
         $this->denyAccessUnlessGranted(InventoryVoter::EDIT, $item);
 
         return $this->json(['message' => 'Item editado']);

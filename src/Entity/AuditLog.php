@@ -1,5 +1,4 @@
 <?php
-// src/Entity/AuditLog.php
 
 namespace App\Entity;
 use App\Repository\AuditLogRepository;

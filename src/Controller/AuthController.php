@@ -1,15 +1,17 @@
 <?php
-// src/Controller/AuthController.php
 
 namespace App\Controller;
 
 use App\DTO\RegisterUserDTO;
 use App\Service\UserRegistrationService;
 use App\Service\AuditLoggerService;
+use App\Form\RegistrationFormType;
+use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -62,6 +64,70 @@ class AuthController extends AbstractController
             'user' => $result['user']
         ], 201);
     }
+    #[Route('/web/register', name: 'auth_web_register', methods: ['POST'])]
+    public function registerWeb(
+        Request $request,
+        UserRegistrationService $registrationService
+    ): Response {
+        $user = new User();
+        $isAdmin = $this->isGranted('ROLE_ADMIN');
+
+        $form = $this->createForm(RegistrationFormType::class, $user, [
+            'is_admin' => $isAdmin
+        ]);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $role = 'ROLE_USER';
+
+            if ($isAdmin && $form->has('roles')) {
+                $selectedRole = $form->get('roles')->getData();
+                if ($selectedRole) {
+                    $role = $selectedRole;
+                }
+            }
+
+            $data = [
+                'email' => $form->get('email')->getData(),
+                'password' => $form->get('plainPassword')->getData(),
+                'firstName' => $form->get('firstName')->getData(),
+                'lastName' => $form->get('lastName')->getData(),
+                'role' => $role,
+            ];
+
+            $result = $registrationService->register(new RegisterUserDTO($data));
+
+            if ($result['success']) {
+                $this->addFlash('success', 'Usuario registrado exitosamente!');
+
+                if ($isAdmin) {
+                    return $this->redirectToRoute('app_users');
+                }
+
+                return $this->redirectToRoute('app_login');
+            } else {
+                foreach ($result['errors'] as $error) {
+                    $this->addFlash('error', $error);
+                }
+
+                // Regresar a la página de auth con errores
+                return $this->render('security/auth.html.twig', [
+                    'registrationForm' => $form->createView(),
+                    'is_register_page' => true,
+                    'last_username' => '',
+                    'error' => null
+                ]);
+            }
+        }
+
+        return $this->render('security/auth.html.twig', [
+            'registrationForm' => $form->createView(),
+            'is_register_page' => true,
+            'last_username' => '',
+            'error' => null
+        ]);
+    }
 
     #[Route('/me', name: 'auth_me', methods: ['GET'])]
     public function getCurrentUser(TokenStorageInterface $tokenStorage): JsonResponse
@@ -94,8 +160,6 @@ class AuthController extends AbstractController
             'timestamp' => time()
         ]);
     }
-
-    // src/Controller/AuthController.php (AGREGAR ESTE MÉTODO)
 
     #[Route('/login', name: 'auth_login', methods: ['POST'])]
     public function login(JWTTokenManagerInterface $jwtManager): JsonResponse

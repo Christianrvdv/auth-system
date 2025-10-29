@@ -1,5 +1,4 @@
 <?php
-// src/Controller/HomeController.php
 
 namespace App\Controller;
 

@@ -1,5 +1,4 @@
 <?php
-// src/Service/UserRegistrationService.php
 
 namespace App\Service;
 
@@ -23,7 +22,6 @@ class UserRegistrationService
         $errors = $this->validator->validate($data);
 
         if (count($errors) > 0) {
-            // Transformar errores en array legible
             $errorMessages = [];
             foreach ($errors as $error) {
                 $errorMessages[] = $error->getMessage();
@@ -35,7 +33,6 @@ class UserRegistrationService
             ];
         }
 
-        // PASO 2: VERIFICAR USUARIO EXISTENTE
         $existingUser = $this->em->getRepository(User::class)
             ->findOneBy(['email' => $data->email]);
 
@@ -46,24 +43,21 @@ class UserRegistrationService
             ];
         }
 
-        // PASO 3: CREAR Y GUARDAR USUARIO
         $user = new User();
         $user->setEmail($data->email);
         $user->setFirstName($data->firstName);
         $user->setLastName($data->lastName);
         $user->setRoles([$data->role]);
 
-        // ¡IMPORTANTE! Hashear la contraseña
         $hashedPassword = $this->passwordHasher->hashPassword($user, $data->password);
         $user->setPassword($hashedPassword);
 
         $user->setUpdatedAt(new \DateTime());
 
-        // PASO 4: PERSISTIR EN BASE DE DATOS
         $this->em->persist($user);
         $this->em->flush();
 
-        // PASO 5: RETORNAR RESULTADO EXITOSO
+
         return [
             'success' => true,
             'user' => [

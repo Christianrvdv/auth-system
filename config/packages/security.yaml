@@ -45,7 +45,7 @@ security:
             provider: app_user_provider
             form_login:
                 login_path: app_login
-                check_path: app_login  # ← CAMBIAR A LA MISMA RUTA
+                check_path: app_login
                 enable_csrf: true
                 username_parameter: _username
                 password_parameter: _password
@@ -54,7 +54,7 @@ security:
                 target: app_home
 
     access_control:
-        - { path: ^/api/auth/(login|register|health), roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/(login|register|health|web/register), roles: PUBLIC_ACCESS }
         - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api/manager, roles: ROLE_MANAGER }
         - { path: ^/api/inventory, roles: ROLE_INVENTORY_MANAGER }

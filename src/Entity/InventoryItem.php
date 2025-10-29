@@ -1,5 +1,4 @@
 <?php
-// src/Entity/InventoryItem.php
 
 namespace App\Entity;
 

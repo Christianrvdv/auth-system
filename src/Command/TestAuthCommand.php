@@ -1,6 +1,4 @@
 <?php
-// src/Command/TestAuthCommand.php
-
 namespace App\Command;
 
 use App\DTO\RegisterUserDTO;
