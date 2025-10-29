@@ -3,166 +3,162 @@
 {% block title %}Autenticación - Sistema de Autenticación{% endblock %}
 
 {% block body %}
-<div class="auth-container {% if is_register_page is defined and is_register_page %}sign-up-mode{% endif %}">
-    <div class="forms-container">
-        <div class="signin-signup">
-            <!-- Formulario de Login -->
-            <form method="post" action="{{ path('app_login') }}" class="sign-in-form">
-                <h2 class="title">Iniciar Sesión</h2>
+    <div class="auth-container {% if is_register_page is defined and is_register_page %}sign-up-mode{% endif %}">
+        <div class="auth-card">
+            <div class="forms-container">
+                <div class="signin-signup">
+                    <!-- Formulario de Login -->
+                    <form method="post" action="{{ path('app_login') }}" class="sign-in-form">
+                        <h2 class="title">Iniciar Sesión</h2>
 
-                {% if error is defined and error %}
-                    <div class="alert alert-danger mb-3">
-                        <i class="bi bi-exclamation-triangle"></i> {{ error.messageKey|trans(error.messageData, 'security') }}
-                    </div>
-                {% endif %}
-
-                {% for message in app.flashes('error') %}
-                    <div class="alert alert-danger mb-3">
-                        <i class="bi bi-exclamation-triangle"></i> {{ message }}
-                    </div>
-                {% endfor %}
-
-                {% for message in app.flashes('success') %}
-                    <div class="alert alert-success mb-3">
-                        <i class="bi bi-check-circle"></i> {{ message }}
-                    </div>
-                {% endfor %}
-
-                <div class="input-field">
-                    <i class="fas fa-user"></i>
-                    <input type="email" value="{{ last_username|default('') }}" name="_username" id="inputEmail" placeholder="Email" required autofocus>
-                </div>
-                <div class="input-field">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" name="_password" id="inputPassword" placeholder="Contraseña" required>
-                </div>
-
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-
-                <div class="form-check mb-3">
-                    <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me" value="1">
-                    <label class="form-check-label" for="remember_me">Recordarme</label>
-                </div>
-
-                <button type="submit" class="auth-btn solid">Iniciar Sesión</button>
-
-                <p class="social-text">O inicia sesión con</p>
-                <div class="social-media">
-                    <a href="#" class="social-icon">
-                        <i class="fab fa-google"></i>
-                    </a>
-                </div>
-            </form>
-
-            <!-- Formulario de Registro -->
-            {% if registrationForm is defined %}
-            {{ form_start(registrationForm, {
-            'attr': {'class': 'sign-up-form needs-validation', 'novalidate': true},
-            'action': path('auth_web_register')
-            }) }}
-            <h2 class="title">Registrarse</h2>
-
-            {% if not registrationForm.vars.valid %}
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    {% for error in registrationForm.vars.errors %}
-                    <li>{{ error.message }}</li>
-                        {% endfor %}
-                        </ul>
-                        </div>
+                        {% if error is defined and error %}
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle"></i> {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
                         {% endif %}
 
                         {% for message in app.flashes('error') %}
-                        <div class="alert alert-danger">
-                        <i class="bi bi-exclamation-triangle"></i> {{ message }}
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle"></i> {{ message }}
+                            </div>
+                        {% endfor %}
+                        {% for message in app.flashes('success') %}
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle"></i> {{ message }}
+                            </div>
+                        {% endfor %}
+
+                        <div class="input-field">
+                            <i class="fas fa-user"></i>
+                            <input type="email" value="{{ last_username|default('') }}" name="_username" id="inputEmail" placeholder="Email" required autofocus>
                         </div>
+                        <div class="input-field">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="_password" id="inputPassword" placeholder="Contraseña" required>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me" value="1">
+                            <label class="form-check-label" for="remember_me">Recordarme</label>
+                        </div>
+
+                        <button type="submit" class="auth-btn solid" id="login-btn">Iniciar Sesión</button>
+
+                        <p class="social-text">O inicia sesión con</p>
+                        <div class="social-media">
+                            <a href="#" class="social-icon">
+                                <i class="fab fa-google"></i>
+                            </a>
+                        </div>
+                    </form>
+
+                    <!-- Formulario de Registro -->
+                    {% if registrationForm is defined %}
+                        {{ form_start(registrationForm, {
+                            'attr': {'class': 'sign-up-form needs-validation', 'novalidate': true},
+                            'action': path('auth_web_register')
+                        }) }}
+                        <h2 class="title">Registrarse</h2>
+
+                        {% if not registrationForm.vars.valid %}
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle"></i> Por favor, corrige los errores en el formulario.
+                            </div>
+                        {% endif %}
+
+                        {% for message in app.flashes('error') %}
+                            <div class="alert alert-danger">
+                                <i class="bi bi-exclamation-triangle"></i> {{ message }}
+                            </div>
                         {% endfor %}
 
                         {% for message in app.flashes('success') %}
-                        <div class="alert alert-success">
-                        <i class="bi bi-check-circle"></i> {{ message }}
-                        </div>
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle"></i> {{ message }}
+                            </div>
                         {% endfor %}
 
                         <div class="input-field">
-                        <i class="fas fa-user"></i>
-                        {{ form_widget(registrationForm.firstName, {'attr': {
-                            'placeholder': 'Nombre',
-                            'class': 'form-control'
-                        }}) }}
-                        <div class="text-danger small mt-1">
-                        {{ form_errors(registrationForm.firstName) }}
-                        </div>
-                        </div>
-
-                        <div class="input-field">
-                        <i class="fas fa-user"></i>
-                        {{ form_widget(registrationForm.lastName, {'attr': {
-                            'placeholder': 'Apellido',
-                            'class': 'form-control'
-                        }}) }}
-                        <div class="text-danger small mt-1">
-                        {{ form_errors(registrationForm.lastName) }}
-                        </div>
+                            <i class="fas fa-user"></i>
+                            {{ form_widget(registrationForm.firstName, {'attr': {
+                                'placeholder': 'Nombre',
+                                'class': 'form-control'
+                            }}) }}
+                            <div class="text-danger">
+                                {{ form_errors(registrationForm.firstName) }}
+                            </div>
                         </div>
 
                         <div class="input-field">
-                        <i class="fas fa-envelope"></i>
-                        {{ form_widget(registrationForm.email, {'attr': {
-                            'placeholder': 'Email',
-                            'class': 'form-control'
-                        }}) }}
-                        <div class="text-danger small mt-1">
-                        {{ form_errors(registrationForm.email) }}
-                        </div>
-                        </div>
-
-                        <div class="input-field">
-                        <i class="fas fa-lock"></i>
-                        {{ form_widget(registrationForm.plainPassword.first, {'attr': {
-                            'placeholder': 'Contraseña',
-                            'class': 'form-control'
-                        }}) }}
-                        <div class="text-danger small mt-1">
-                        {{ form_errors(registrationForm.plainPassword.first) }}
-                        </div>
+                            <i class="fas fa-user"></i>
+                            {{ form_widget(registrationForm.lastName, {'attr': {
+                                'placeholder': 'Apellido',
+                                'class': 'form-control'
+                            }}) }}
+                            <div class="text-danger">
+                                {{ form_errors(registrationForm.lastName) }}
+                            </div>
                         </div>
 
                         <div class="input-field">
-                        <i class="fas fa-lock"></i>
-                        {{ form_widget(registrationForm.plainPassword.second, {'attr': {
-                            'placeholder': 'Confirmar Contraseña',
-                            'class': 'form-control'
-                        }}) }}
-                        <div class="text-danger small mt-1">
-                        {{ form_errors(registrationForm.plainPassword.second) }}
+                            <i class="fas fa-envelope"></i>
+                            {{ form_widget(registrationForm.email, {'attr': {
+                                'placeholder': 'Email',
+                                'class': 'form-control'
+                            }}) }}
+                            <div class="text-danger">
+                                {{ form_errors(registrationForm.email) }}
+                            </div>
                         </div>
+
+                        <div class="input-field">
+                            <i class="fas fa-lock"></i>
+                            {{ form_widget(registrationForm.plainPassword.first, {'attr': {
+                                'placeholder': 'Contraseña',
+                                'class': 'form-control'
+                            }}) }}
+                            <div class="text-danger">
+                                {{ form_errors(registrationForm.plainPassword.first) }}
+                            </div>
+                        </div>
+
+                        <div class="input-field">
+                            <i class="fas fa-lock"></i>
+                            {{ form_widget(registrationForm.plainPassword.second, {'attr': {
+                                'placeholder': 'Confirmar Contraseña',
+                                'class': 'form-control'
+                            }}) }}
+                            <div class="text-danger">
+                                {{ form_errors(registrationForm.plainPassword.second) }}
+                            </div>
                         </div>
 
                         <!-- Solo mostrar campo de roles para administradores -->
                         {% if registrationForm.roles is defined and is_granted('ROLE_ADMIN') %}
-                        <div class="input-field">
-                            <i class="fas fa-user-tag"></i>
-                            {{ form_widget(registrationForm.roles, {'attr': {
-                                'class': 'form-control'
-                            }}) }}
-                            <div class="text-danger small mt-1">
-                                {{ form_errors(registrationForm.roles) }}
+                            <div class="input-field">
+                                <i class="fas fa-user-tag"></i>
+                                {{ form_widget(registrationForm.roles, {'attr': {
+                                    'class': 'form-control'
+                                }}) }}
+                                <div class="text-danger">
+                                    {{ form_errors(registrationForm.roles) }}
+                                </div>
                             </div>
-                        </div>
                         {% endif %}
 
-                        <div class="form-check mb-3">
+                        <div class="form-check">
                             {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
                             {{ form_label(registrationForm.agreeTerms, 'Acepto los términos y condiciones', {'label_attr': {'class': 'form-check-label'}}) }}
-                            <div class="text-danger small mt-1">
+                            <div class="text-danger">
                                 {{ form_errors(registrationForm.agreeTerms) }}
                             </div>
                         </div>
 
-                        <button type="submit" class="auth-btn">Crear Cuenta</button>
+                        <button type="submit" class="auth-btn" id="register-btn">Crear Cuenta</button>
                         {{ form_end(registrationForm) }}
-                        {% else %}
+                    {% else %}
                         <!-- Formulario de registro simple (backup) -->
                         <form method="post" action="{{ path('auth_web_register') }}" class="sign-up-form" novalidate>
                             <h2 class="title">Registrarse</h2>
@@ -187,7 +183,7 @@
                                 <i class="fas fa-lock"></i>
                                 <input type="password" name="confirm_password" placeholder="Confirmar Contraseña" required>
                             </div>
-                            <div class="form-check mb-3">
+                            <div class="form-check">
                                 <input type="checkbox" class="form-check-input" id="agreeTerms" name="agreeTerms" required>
                                 <label class="form-check-label" for="agreeTerms">Acepto los términos y condiciones</label>
                             </div>
@@ -200,34 +196,35 @@
                                 </a>
                             </div>
                         </form>
-                        {% endif %}
+                    {% endif %}
+                </div>
             </div>
-        </div>
 
-        <div class="panels-container">
-            <div class="panel left-panel">
-                <div class="content">
-                    <h3>¿Eres nuevo?</h3>
-                    <p>
-                        ¡Únete a nuestra comunidad y descubre todas las funciones exclusivas que tenemos para ti!
-                    </p>
-                    <button class="auth-btn transparent" id="sign-up-btn">
-                        Crear Cuenta
-                    </button>
+            <div class="panels-container">
+                <div class="panel left-panel">
+                    <div class="content">
+                        <h3>¿Eres nuevo?</h3>
+                        <p>
+                            ¡Únete a nuestra comunidad y descubre todas las funciones exclusivas que tenemos para ti!
+                        </p>
+                        <button class="auth-btn transparent" id="sign-up-btn">
+                            Crear Cuenta
+                        </button>
+                    </div>
+                    <img src="{{ asset('img/log.svg') }}" class="image" alt="Ilustración de inicio de sesión" />
                 </div>
-                <img src="{{ asset('img/log.svg') }}" class="image" alt="Ilustración de inicio de sesión" />
-            </div>
-            <div class="panel right-panel">
-                <div class="content">
-                    <h3>¿Ya tienes una cuenta?</h3>
-                    <p>
-                        ¡Inicia sesión para acceder a tu cuenta y continuar donde lo dejaste!
-                    </p>
-                    <button class="auth-btn transparent" id="sign-in-btn">
-                        Iniciar Sesión
-                    </button>
+                <div class="panel right-panel">
+                    <div class="content">
+                        <h3>¿Ya tienes una cuenta?</h3>
+                        <p>
+                            ¡Inicia sesión para acceder a tu cuenta y continuar donde lo dejaste!
+                        </p>
+                        <button class="auth-btn transparent" id="sign-in-btn">
+                            Iniciar Sesión
+                        </button>
+                    </div>
+                    <img src="{{ asset('img/register.svg') }}" class="image" alt="Ilustración de registro" />
                 </div>
-                <img src="{{ asset('img/register.svg') }}" class="image" alt="Ilustración de registro" />
             </div>
         </div>
     </div>
@@ -241,6 +238,13 @@
                     if (!form.checkValidity()) {
                         event.preventDefault();
                         event.stopPropagation();
+                    } else {
+                        // Mostrar estado de carga en el botón
+                        const submitBtn = form.querySelector('button[type="submit"]');
+                        if (submitBtn) {
+                            submitBtn.classList.add('loading');
+                            submitBtn.disabled = true;
+                        }
                     }
                     form.classList.add('was-validated');
                 }, false);
@@ -281,6 +285,27 @@
             {% if is_register_page is defined and is_register_page %}
             container.classList.add("sign-up-mode");
             {% endif %}
+
+            // Efecto ripple en botones
+            const buttons = document.querySelectorAll('.auth-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Solo aplicar el efecto si no está en estado de carga
+                    if (!this.classList.contains('loading')) {
+                        const x = e.clientX - e.target.getBoundingClientRect().left;
+                        const y = e.clientY - e.target.getBoundingClientRect().top;
+
+                        const ripples = document.createElement('span');
+                        ripples.style.left = x + 'px';
+                        ripples.style.top = y + 'px';
+                        this.appendChild(ripples);
+
+                        setTimeout(() => {
+                            ripples.remove();
+                        }, 600);
+                    }
+                });
+            });
         });
     </script>
 {% endblock %}
