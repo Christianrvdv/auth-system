@@ -65,7 +65,7 @@ class RegistrationFormType extends AbstractType
             ])
         ;
 
-        // Solo los administradores pueden asignar roles
+
         if ($options['is_admin']) {
             $builder->add('roles', ChoiceType::class, [
                 'label' => 'Rol',
@@ -79,7 +79,7 @@ class RegistrationFormType extends AbstractType
                 'expanded' => false,
                 'required' => true,
                 'placeholder' => 'Selecciona un rol',
-                'mapped' => false, // Este campo no está mapeado directamente a la entidad
+                'mapped' => true,
             ]);
         }
     }

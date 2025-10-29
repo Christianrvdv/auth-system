@@ -16,7 +16,7 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register', methods: ['GET'])]
     public function showRegister(): Response
     {
-        // Si el usuario ya está autenticado y no es admin, redirigir a home
+        // Solo redirigir si el usuario YA está autenticado y NO es admin
         if ($this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('app_home');
         }
@@ -30,7 +30,10 @@ class RegistrationController extends AbstractController
         Request $request,
         UserRegistrationService $registrationService
     ): Response {
-        // Si el usuario ya está autenticado y no es admin, redirigir a home
+        // SOLUCIÓN: Cambiar la lógica aquí también
+        // Permitir registro si:
+        // 1. El usuario NO está autenticado (null) O
+        // 2. El usuario ESTÁ autenticado Y es administrador
         if ($this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('app_home');
         }
@@ -52,13 +55,21 @@ class RegistrationController extends AbstractController
             // Solo los administradores pueden asignar otros roles
             $role = 'ROLE_USER';
 
+            // Si es admin y el formulario tiene campo de roles, usar ese rol
+            if ($isAdmin && $form->has('roles')) {
+                $selectedRole = $form->get('roles')->getData();
+                if ($selectedRole) {
+                    $role = $selectedRole;
+                }
+            }
+
             // Convertir form data a DTO
             $data = [
                 'email' => $form->get('email')->getData(),
                 'password' => $form->get('plainPassword')->getData(),
                 'firstName' => $form->get('firstName')->getData(),
                 'lastName' => $form->get('lastName')->getData(),
-                'role' => $role, // Siempre ROLE_USER para usuarios normales
+                'role' => $role,
             ];
 
             $result = $registrationService->register(new \App\DTO\RegisterUserDTO($data));
